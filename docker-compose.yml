@@ -1,0 +1,93 @@
+version: '3'
+
+services:
+
+  cadvisor:
+    image: google/cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+
+  metrics-gateway:
+    image: prom/pushgateway
+    ports:
+      - 9091:9091
+
+  alertmanager:
+    image: prom/alertmanager
+    volumes:
+      - ./config:/prometheus
+    command:
+      - '--config.file=/prometheus/alertmanager.yml'
+    ports:
+      - 9093:9093
+
+  prometheus-server:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    links:
+      - cadvisor:cadvisor
+      - metrics-gateway:metrics-gateway
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana-ui:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    links:
+      - prometheus-server:prometheus
+
+  postgres:
+    image: postgres:11.4
+    hostname: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+
+  webserver:
+    build:
+      context: web-server
+      dockerfile: ./services/app/Dockerfile
+    command: >
+      bash -c "psql -h postgres -U docker -c 'CREATE DATABASE hello' || true &&
+      python manage.py makemigrations hello &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000;"
+    ports:
+      - 8000:8000
+      - 8001:8001
+    links:
+      - postgres:postgres
+    environment:
+      - DEBUG=True
+      - PORT=8000
+      - POSTGRES_DB_NAME=hello
+      - POSTGRES_PORT_5432_TCP_ADDR=postgres
+      - POSTGRES_PORT_5432_TCP_PORT=5432
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - PGPASSWORD=docker
+      - SECRET_KEY=hello
+      - WSGI_MODULE=hello.wsgi:application
+
+  load:
+    build:
+      context: web-server
+      dockerfile: ./services/app/Dockerfile
+    command: >
+      bash -c "python load.py"
+    links:
+      - webserver:webserver
