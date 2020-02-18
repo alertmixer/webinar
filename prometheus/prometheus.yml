@@ -9,8 +9,7 @@ global:
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
-  # - "first.rules"
-  # - "second.rules"
+  - "prometheus.rules.yml"
 
 scrape_configs:
 
@@ -45,3 +44,9 @@ scrape_configs:
 
     static_configs:
       - targets: ['metrics-gateway:9091']
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093

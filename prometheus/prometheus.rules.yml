@@ -1,0 +1,16 @@
+groups:
+- name: ./rules.conf
+  rules:
+
+  # heartbeat alert
+  - alert: Heartbeat
+    expr: vector(1)
+    labels:
+      severity: informational
+
+  - alert: ResponseTimeAlert
+    expr: rate(django_http_requests_latency_including_middlewares_seconds_bucket{le="0.1"}[1m]) > 0.4
+    for: 1m
+    annotations:
+      summary: "A few fast requests came!"
+      description: "{{ $labels.instance }} has a few fast requests!"

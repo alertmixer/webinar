@@ -20,9 +20,9 @@ services:
   alertmanager:
     image: prom/alertmanager
     volumes:
-      - ./config:/prometheus
+      - ./prometheus/alertmanager.yml:/etc/prometheus/alertmanager.yml
     command:
-      - '--config.file=/prometheus/alertmanager.yml'
+      - '--config.file=/etc/prometheus/alertmanager.yml'
     ports:
       - 9093:9093
 
@@ -32,9 +32,11 @@ services:
       - 9090:9090
     links:
       - cadvisor:cadvisor
+      - alertmanager:alertmanager
       - metrics-gateway:metrics-gateway
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.rules.yml:/etc/prometheus/prometheus.rules.yml
 
   grafana-ui:
     image: grafana/grafana
