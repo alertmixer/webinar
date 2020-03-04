@@ -10,10 +10,8 @@ route:
   group_interval:  15s
   repeat_interval: 15s
 
-
-
 receivers:
-- name: "abc"
+- name: "amixr"
   webhook_configs:
   - send_resolved: true
     url: https://app.amixr.io/integrations/v1/alertmanager/123/
