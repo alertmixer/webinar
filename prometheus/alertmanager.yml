@@ -1,5 +1,5 @@
 route:
-  receiver: "slack_general"
+  receiver: "amixr"
   group_by: ['alertname']
   group_wait:      15s
   group_interval:  15s
@@ -9,9 +9,9 @@ receivers:
 - name: "amixr"
   webhook_configs:
   - send_resolved: true
-    url: https://app.amixr.io/integrations/v1/alertmanager/123/
+    url: https://app.amixr.io/integrations/v1/alertmanager/lCKjfmWAIvMy4njJQlqz3tQDW/
 
 - name: "slack_general"
   slack_configs:
-  - api_url: https://hooks.slack.com/services/123
+  - api_url: https://hooks.slack.com/services/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
     channel: '#general'
