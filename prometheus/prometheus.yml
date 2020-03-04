@@ -45,6 +45,14 @@ scrape_configs:
     static_configs:
       - targets: ['metrics-gateway:9091']
 
+  - job_name: 'node-exporter'
+
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+    static_configs:
+      - targets: ['167.172.220.208:9100','159.65.100.178:9100','159.65.104.42:9100','159.65.102.125:9100','159.65.107.79:9100','167.172.219.32:9100','167.172.213.34:9100','167.172.209.238:9100','167.99.108.163:9100','167.172.210.249:9100']
+
 alerting:
   alertmanagers:
   - static_configs:
