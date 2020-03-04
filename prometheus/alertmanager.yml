@@ -1,8 +1,3 @@
-global:
-  # The smarthost and SMTP sender used for mail notifications.
-  smtp_smarthost: 'localhost:25'
-  smtp_from: 'alertmanager@example.org'
-
 route:
   receiver: "slack_general"
   group_by: ['alertname']
