@@ -9,9 +9,4 @@ receivers:
 - name: "amixr"
   webhook_configs:
   - send_resolved: true
-    url: https://app.amixr.io/integrations/v1/alertmanager/lCKjfmWAIvMy4njJQlqz3tQDW/
-
-- name: "slack_general"
-  slack_configs:
-  - api_url: https://hooks.slack.com/services/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
-    channel: '#general'
+    url: https://app.amixr.io/integrations/v1/alertmanager/prWP8z5vB9DxL3XhYjIeY1on7/
